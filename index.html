@@ -32,18 +32,33 @@
             Se Inscrever
         </button>
     </div>
-<video id="bg-soundtrack" loop playsinline style="display: none;">
-    <source src="ep4.mp4" type="video/mp4">
+<video id="bg-soundtrack" loop autoplay playsinline style="display: none;">
+    <source src="SEU_ARQUIVO_DE_VIDEO.mp4" type="video/mp4">
 </video>
 
 <script>
-    // Gatilho Tático: O som começa no primeiro clique do usuário na tela
-    // (Isso burla o bloqueio de autoplay dos navegadores)
-    document.addEventListener('click', function() {
+    window.addEventListener('load', function() {
         var player = document.getElementById("bg-soundtrack");
-        if (player.paused) {
-            player.volume = 0.2; // Volume em 20% para não estourar os ouvidos
-            player.play().catch(e => console.log("Aguardando interação..."));
+        player.volume = 0.2; // Volume 20%
+
+        // Tenta forçar o play imediatamente
+        var playPromise = player.play();
+
+        if (playPromise !== undefined) {
+            playPromise.then(_ => {
+                // Autoplay funcionou! (O navegador confiou em nós)
+                console.log("Áudio iniciado taticamente.");
+            })
+            .catch(error => {
+                // O Navegador bloqueou. Ativar Plano B: Esperar o primeiro clique.
+                console.log("Capataz do navegador bloqueou. Aguardando interação.");
+                document.addEventListener('click', function() {
+                    player.play();
+                }, { once: true });
+            });
+        }
+    });
+</script>
         }
     }, { once: true }); // Executa apenas uma vez
 </script>
