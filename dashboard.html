@@ -3,74 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mapa de Zonas - BlueWolf</title>
+    <title>Ilha de Atividades</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
     <style>
-        body { 
-            font-family: 'Press Start 2P', cursive; 
-            background-color: #050014;
-            overflow-x: hidden;
-        }
-
-        /* Animação de Flutuar (Como as fases do Bomberman) */
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-            100% { transform: translateY(0px); }
-        }
-        .float-fast { animation: float 3s ease-in-out infinite; }
-        .float-slow { animation: float 4s ease-in-out infinite; animation-delay: 1s; }
-        .float-reverse { animation: float 3.5s ease-in-out infinite; animation-delay: 0.5s; }
-
-        /* Fundo Espacial Gerado via CSS */
-        .space-bg {
-            background-image: 
-                radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 3px),
-                radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 2px),
-                radial-gradient(white, rgba(255,255,255,.1) 2px, transparent 3px);
-            background-size: 550px 550px, 350px 350px, 250px 250px;
-            background-position: 0 0, 40px 60px, 130px 270px;
-        }
-        
-        /* Estilo dos Botões/Fases */
-        .stage-node {
-            background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
-            border: 4px solid #38bdf8; /* Azul Cyan */
-            image-rendering: pixelated;
-        }
-        .stage-node:hover {
-            border-color: #fbbf24; /* Amarelo ao passar o mouse */
-            transform: scale(1.1);
-            cursor: pointer;
-            box-shadow: 0 0 20px rgba(251, 191, 36, 0.6);
+        body { font-family: 'Orbitron', sans-serif; }
+        .card-tech {
+            background: linear-gradient(145deg, #1e293b, #0f172a);
+            box-shadow: 5px 5px 10px #0b1120, -5px -5px 10px #1f2f4a;
         }
     </style>
 </head>
-<body class="space-bg min-h-screen text-white flex flex-col items-center">
+<body class="bg-[#0a0f1c] min-h-screen flex flex-col">
 
-    <div class="w-full p-4 flex justify-between items-center bg-red-900/20 border-b-4 border-red-800 z-50">
-        <div class="text-xs md:text-sm text-cyan-400">ZONE 1-1</div>
-        <div class="text-xs md:text-sm text-yellow-400">SCORE: 0</div>
+    <div class="w-full p-4 flex justify-between items-center bg-slate-900/80 border-b border-cyan-900 backdrop-blur-md sticky top-0 z-50">
+        <span class="font-bold text-cyan-400 tracking-wider text-sm md:text-base">BLUEWOLF IDIOMAS</span>
+        <a href="index.html" class="px-4 py-1 bg-red-900/50 rounded text-xs text-red-300 border border-red-800 hover:bg-red-800">SAIR</a>
     </div>
 
-    <h1 class="mt-8 text-xl md:text-3xl text-red-500 drop-shadow-[4px_4px_0_rgba(0,0,0,1)] text-center px-4">
-        SELEÇÃO DE FASE
-    </h1>
-
-    <div class="flex-1 flex items-center justify-center w-full max-w-4xl p-6 relative">
+    <div class="flex-1 flex flex-col items-center justify-center p-6">
         
-        <svg class="absolute inset-0 w-full h-full pointer-events-none opacity-30 z-0" xmlns="http://www.w3.org/2000/svg">
-            <line x1="50%" y1="50%" x2="50%" y2="20%" stroke="white" stroke-width="4" stroke-dasharray="10,10" />
-            <line x1="50%" y1="50%" x2="20%" y2="50%" stroke="white" stroke-width="4" stroke-dasharray="10,10" />
-            <line x1="50%" y1="50%" x2="80%" y2="50%" stroke="white" stroke-width="4" stroke-dasharray="10,10" />
-            <line x1="50%" y1="50%" x2="50%" y2="80%" stroke="white" stroke-width="4" stroke-dasharray="10,10" />
-        </svg>
+        <div class="w-full max-w-md mb-8">
+            <button class="w-full py-3 bg-gradient-to-r from-cyan-700 to-blue-700 border-2 border-cyan-400 text-white font-bold rounded tracking-widest shadow-[0_0_15px_rgba(6,182,212,0.6)] uppercase hover:brightness-110 active:scale-95 transition-all">
+                INSCREVER
+            </button>
+        </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 md:grid-rows-3 gap-8 md:gap-4 z-10 w-full place-items-center">
+        <h2 class="text-white text-2xl font-bold mb-6 uppercase tracking-widest text-center drop-shadow-[0_0_5px_rgba(255,255,255,0.8)]">
+            Selecione o Protocolo
+        </h2>
 
-            <a href="materialimersivo.html" class="md:col-start-2 md:row-start-1 float-slow flex flex-col items-center gap-2 group">
-                <div class="w-24 h-24 md:w-32 md:h-32 stage-node rounded-full flex items-center justify-center transition-all">
-                    <i class="fa-solid fa-
+        <div class="grid grid-cols-2 gap-4 w-full max-w-md">
+            
+            <a href="ilhadeatividades.html" class="aspect-square card-tech rounded-2xl border border-cyan-500/30 flex flex-col items-center justify-center gap-2 p-2 cursor-pointer hover:border-cyan-400 hover:shadow-[0_0_15px_rgba(6,182,212,0.4)] transition-all active:scale-95 group">
+                <i class="fa-solid fa-earth-americas text-5xl text-cyan-400 drop-shadow-[0_0_10px_cyan] group-hover:scale-110 transition-transform"></i>
+                <span class="text-white text-xs md:text-sm font-bold text-center uppercase leading-tight mt-2 group-hover:text-cyan-200">
+                    Ilha de<br>Atividades
+                </span>
+            </a>
+
+            <a href="materialimersivo.html" class="aspect-square
