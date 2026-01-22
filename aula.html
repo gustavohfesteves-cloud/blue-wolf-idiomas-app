@@ -21,6 +21,32 @@
             </button>
         </a>
     </div>
+<video id="bg-soundtrack" loop autoplay playsinline style="display: none;">
+    <source src="bluewolffalando.mp4" type="video/mp4">
+</video>
 
+<script>
+    window.addEventListener('load', function() {
+        var player = document.getElementById("bg-soundtrack");
+        player.volume = 0.2; // Volume 20%
+
+        // Tenta forçar o play imediatamente
+        var playPromise = player.play();
+
+        if (playPromise !== undefined) {
+            playPromise.then(_ => {
+                // Autoplay funcionou! (O navegador confiou em nós)
+                console.log("Áudio iniciado taticamente.");
+            })
+            .catch(error => {
+                // O Navegador bloqueou. Ativar Plano B: Esperar o primeiro clique.
+                console.log("Capataz do navegador bloqueou. Aguardando interação.");
+                document.addEventListener('click', function() {
+                    player.play();
+                }, { once: true });
+            });
+        }
+    });
+</script>
 </body>
 </html>
