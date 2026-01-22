@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seleção de Idioma</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Orbitron', sans-serif; }
+        .btn-cyber {
+            background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+            box-shadow: 0 0 10px rgba(14, 165, 233, 0.3), inset 0 0 20px rgba(0,0,0,0.5);
+        }
+        .btn-cyber:hover {
+            border-color: #22d3ee;
+            box-shadow: 0 0 20px rgba(34, 211, 238, 0.6);
+        }
+    </style>
+</head>
+<body class="bg-[#050b14] h-screen flex flex-col items-center justify-center p-6 relative overflow-hidden">
+
+    <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
+
+    <div class="z-10 w-full max-w-sm flex flex-col gap-6">
+        
+        <a href="aula.html" class="group relative w-full py-6 btn-cyber rounded-lg border-2 border-cyan-700 transition-all active:scale-95 flex items-center justify-center">
+            <div class="absolute top-1 left-4 w-16 h-1 bg-cyan-500 shadow-[0_0_5px_cyan]"></div>
+            <div class="absolute bottom-1 right-4 w-16 h-1 bg-cyan-500 shadow-[0_0_5px_cyan]"></div>
+            
+            <span class="text-3xl font-bold text-white tracking-[0.2em] group-hover:text-cyan-300 drop-shadow-md">
+                INGLÊS
+            </span>
+        </a>
+
+        <a href="aula.html" class="group relative w-full py-6 btn-cyber rounded-lg border-2 border-cyan-700 transition-all active:scale-95 flex items-center justify-center">
+            <div class="absolute top-1 left-4 w-16 h-1 bg-cyan-500 shadow-[0_0_5px_cyan]"></div>
+            <div class="absolute bottom-1 right-4 w-16 h-1 bg-cyan-500 shadow-[0_0_5px_cyan]"></div>
+            <span class="text-3xl font-bold text-white tracking-[0.2em] group-hover:text-cyan-300 drop-shadow-md">
+                ESPANHOL
+            </span>
+        </a>
+
+        <a href="aula.html" class="group relative w-full py-6 btn-cyber rounded-lg border-2 border-cyan-700 transition-all active:scale-95 flex items-center justify-center">
+            <div class="absolute top-1 left-4 w-16 h-1 bg-cyan-500 shadow-[0_0_5px_cyan]"></div>
+            <div class="absolute bottom-1 right-4 w-16 h-1 bg-cyan-500 shadow-[0_0_5px_cyan]"></div>
+            <span class="text-3xl font-bold text-white tracking-[0.2em] group-hover:text-cyan-300 drop-shadow-md">
+                FRANCÊS
+            </span>
+        </a>
+
+    </div>
+
+</body>
+</html>
