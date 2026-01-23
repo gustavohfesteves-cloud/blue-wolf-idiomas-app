@@ -17,18 +17,17 @@
             overflow-x: hidden;
         }
 
-        /* Linha do Circuito (Fica atrás dos botões) */
+        /* Linha do Circuito (Atrás dos botões) */
         .circuit-line {
             position: absolute;
-            width: 8px;
+            width: 6px;
             top: 0;
             bottom: 0;
-            background: #1e293b;
+            background: #1e293b; /* Cor escura da trilha */
             left: 50%;
             transform: translateX(-50%);
-            z-index: 0; /* Atrás dos botões */
+            z-index: 0;
             box-shadow: 0 0 10px rgba(0,0,0,0.5);
-            border-radius: 4px;
         }
 
         /* Botões de Nível */
@@ -40,86 +39,75 @@
             align-items: center;
             justify-content: center;
             position: relative;
-            z-index: 20; /* Bem acima da linha */
+            z-index: 10; /* Acima da linha */
             transition: all 0.3s;
             cursor: pointer;
             font-family: 'Orbitron', sans-serif;
             font-weight: 900;
             font-size: 1.2rem;
-            background-color: #020617; /* Fundo para esconder a linha que passa por trás */
+            background-color: #020617; /* Fundo para tapar a linha */
         }
 
-        /* Estado: Desbloqueado */
+        /* 1. Nível Aberto (Atual) */
         .node-unlocked {
-            border: 4px solid #38bdf8;
+            border: 4px solid #38bdf8; /* Cyan */
             box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
             color: white;
+            animation: pulse-border 2s infinite;
         }
-        .node-unlocked:hover {
-            transform: scale(1.1);
-            border-color: #fbbf24;
-            box-shadow: 0 0 25px rgba(251, 191, 36, 0.6);
-            color: #fbbf24;
-        }
+        .node-unlocked:hover { transform: scale(1.1); }
 
-        /* Estado: Bloqueado */
+        /* 2. Nível Bloqueado (Futuro) */
         .node-locked {
-            border: 4px solid #334155;
+            border: 4px solid #334155; /* Slate Dark */
             color: #475569;
             cursor: not-allowed;
         }
 
-        /* Estado: Concluído (Check) */
+        /* 3. Nível Concluído (Passado) */
         .node-completed {
-            background: #0ea5e9;
-            border-color: #0ea5e9;
+            background: #0ea5e9; /* Preenchido */
+            border: 4px solid #0ea5e9;
             box-shadow: 0 0 10px #0ea5e9;
         }
 
         /* Baú */
         .chest-container {
             position: relative;
-            z-index: 20;
+            z-index: 10;
             background-color: #020617;
             padding: 10px;
             border-radius: 20px;
+            margin-top: 20px;
         }
         
-        .chest-node {
+        .chest-icon {
             font-size: 3rem;
-            color: #475569; /* Cinza escuro */
             transition: transform 0.3s;
-            filter: grayscale(100%);
-            opacity: 0.5;
-            cursor: not-allowed;
         }
+
+        /* Baú Fechado */
+        .chest-locked { color: #475569; filter: grayscale(100%); opacity: 0.5; cursor: not-allowed; }
         
-        /* Baú Aberto/Disponível */
-        .chest-unlocked {
-            color: #fbbf24; /* Dourado */
-            filter: grayscale(0%);
-            opacity: 1;
-            cursor: pointer;
-            animation: bounce 2s infinite;
+        /* Baú Aberto */
+        .chest-unlocked { 
+            color: #fbbf24; 
+            filter: grayscale(0%); 
+            opacity: 1; 
+            cursor: pointer; 
+            animation: bounce 2s infinite; 
             text-shadow: 0 0 20px rgba(251, 191, 36, 0.6);
         }
-        
-        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
 
-        /* HUD */
-        .hud-panel {
-            font-family: 'Orbitron', sans-serif;
-            background: rgba(15, 23, 42, 0.95);
-            border-bottom: 2px solid #22d3ee;
-            backdrop-filter: blur(5px);
-        }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        @keyframes pulse-border { 0% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(56, 189, 248, 0); } 100% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0); } }
+
+        .hud-panel { background: rgba(15, 23, 42, 0.95); border-bottom: 2px solid #22d3ee; }
     </style>
 </head>
 <body class="flex flex-col items-center">
 
-    <div class="fixed inset-0 z-0 pointer-events-none opacity-20 bg-cover bg-center mix-blend-overlay" 
-         style="background-image: url('assets/pattern_tech.png');">
-    </div>
+    <div class="fixed inset-0 z-0 pointer-events-none opacity-20 bg-cover bg-center mix-blend-overlay" style="background-image: url('assets/pattern_tech.png');"></div>
 
     <div class="fixed top-0 w-full z-50 hud-panel flex justify-between items-center px-4 py-3 shadow-lg">
         <a href="ilhadeatividades.html" class="flex items-center gap-2 text-cyan-400 hover:text-white transition-colors">
@@ -127,69 +115,20 @@
             <span class="text-xs font-bold tracking-widest uppercase">Mapa</span>
         </a>
         <div class="flex items-center gap-2 text-yellow-400 bg-slate-900/50 px-3 py-1 rounded-full border border-yellow-600/30">
-            <i class="fa-solid fa-coins animate-pulse"></i>
+            <i class="fa-solid fa-coins"></i>
             <span id="display-coins" class="text-sm font-bold">...</span>
         </div>
     </div>
 
     <div class="relative z-10 w-full flex flex-col items-center pb-20 mt-24">
-
-        <div class="mb-12 text-center px-4">
-            <h1 class="text-lg md:text-2xl text-cyan-300 drop-shadow-[0_0_8px_rgba(34,211,238,0.8)] uppercase">
-                Zone 1
-            </h1>
+        
+        <div class="mb-8 text-center px-4">
+            <h1 class="text-xl md:text-2xl text-cyan-300 drop-shadow-[0_0_8px_rgba(34,211,238,0.8)] uppercase">Zone 1</h1>
             <p class="text-[10px] text-slate-400 tracking-widest mt-2 uppercase">Eating and Drinking</p>
         </div>
 
         <div class="relative flex flex-col items-center w-full max-w-sm">
             
-            <div class="circuit-line bg-gradient-to-b from-cyan-900 via-slate-800 to-slate-900"></div>
+            <div class="circuit-line"></div>
 
-            <div id="levels-container" class="flex flex-col gap-12 items-center w-full">
-                <p class="text-xs text-slate-500 bg-black p-2 rounded">Carregando Mapa...</p>
-            </div>
-
-            <div class="mt-12 flex flex-col items-center gap-2 chest-container">
-                <i id="final-chest" class="fa-solid fa-box-open chest-node"></i>
-                
-                <div class="bg-black/80 px-2 py-1 border border-yellow-600/50 rounded text-[8px] text-yellow-400 tracking-widest uppercase">
-                    REWARD
-                </div>
-            </div>
-
-        </div>
-    </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log("Sistema Zone 1 Iniciado.");
-
-            try {
-                // 1. Carregar Variáveis de Progresso
-                // Se não existir, assume nível 1 e 0 moedas
-                let userProgress = parseInt(localStorage.getItem('bw_zone1_progress')) || 1; 
-                let userCoins = parseInt(localStorage.getItem('bw_wolfcoins')) || 0;
-                
-                // Atualiza HUD
-                document.getElementById('display-coins').innerText = userCoins + " WC";
-
-                // 2. Gerar Botões (1 a 5)
-                const container = document.getElementById('levels-container');
-                container.innerHTML = ''; // Limpa o "Carregando..."
-
-                for (let i = 1; i <= 5; i++) {
-                    const btn = document.createElement('div');
-                    
-                    // LÓGICA DE ESTADO
-                    if (i < userProgress) {
-                        // Nível Passado (Check Verde/Azul)
-                        btn.className = 'level-node node-completed';
-                        btn.innerHTML = '<i class="fa-solid fa-check text-white"></i>';
-                        // Permite jogar novamente se quiser
-                        btn.onclick = function() { goToActivity(i); };
-                    } 
-                    else if (i === userProgress) {
-                        // Nível Atual (Número, Borda Cyan)
-                        btn.className = 'level-node node-unlocked';
-                        btn.innerText = i;
-                        btn.onclick =
+            <div id="levels-container" class="flex flex-col gap-8
