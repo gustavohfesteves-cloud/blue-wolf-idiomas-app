@@ -13,7 +13,7 @@
             font-family: 'Press Start 2P', cursive;
             background-color: #020617;
             color: white;
-            overflow-x: hidden; /* Evita rolagem lateral */
+            overflow-x: hidden;
         }
 
         /* Caminho de Circuito */
@@ -32,7 +32,7 @@
         .level-node {
             width: 80px;
             height: 80px;
-            border-radius: 50%; /* Circular */
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -54,7 +54,7 @@
         }
         .node-unlocked:hover {
             transform: scale(1.1);
-            border-color: #fbbf24; /* Amarelo */
+            border-color: #fbbf24;
             box-shadow: 0 0 30px rgba(251, 191, 36, 0.6);
         }
 
@@ -67,7 +67,7 @@
             filter: grayscale(100%);
         }
 
-        /* Nível Concluído (Opcional - visual dourado) */
+        /* Nível Concluído */
         .node-completed {
             background: radial-gradient(circle at 30% 30%, #10b981, #059669);
             border: 4px solid #34d399;
@@ -78,7 +78,7 @@
         .chest-node {
             width: 100px;
             height: 80px;
-            background: url('https://cdn-icons-png.flaticon.com/512/4230/4230569.png'); /* Placeholder Pixel Art Chest */
+            background: url('https://cdn-icons-png.flaticon.com/512/4230/4230569.png'); 
             background-size: cover;
             background-position: center;
             z-index: 10;
@@ -94,8 +94,9 @@
             animation: bounce 2s infinite;
         }
         .chest-opened {
-            filter: brightness(1.5) sepia(1); /* Efeito dourado */
+            filter: brightness(1.5) sepia(1); /* Efeito dourado/aberto */
             animation: none;
+            cursor: default;
         }
 
         @keyframes bounce {
@@ -147,10 +148,9 @@
         
         <div class="circuit-line top-4 h-[90%] bg-gradient-to-b from-cyan-900 to-slate-900"></div>
 
-        <div id="levels-container" class="contents">
-            </div>
+        <div id="levels-container" class="contents"></div>
 
-        <div id="final-chest" class="chest-node" onclick="atividade_16.html()"></div>
+        <div id="final-chest" class="chest-node"></div>
         <div class="z-10 bg-slate-900 px-3 py-1 rounded border border-yellow-600 text-[10px] text-yellow-400 tracking-widest">REWARD</div>
 
     </div>
@@ -158,12 +158,13 @@
     <script>
         // --- CONFIGURAÇÃO DO SISTEMA WOLFCOIN & PROGRESSO ---
 
-        // 1. Carregar dados do usuário (Simulação de Banco de Dados)
-        let userProgress = parseInt(localStorage.getItem('bw_zone1_progress')) || 1; // Começa no nível 1
-        let userCoins = parseInt(localStorage.getItem('bw_wolfcoins')) || 0; // Começa com 0 moedas
-        let chestClaimed = localStorage.getItem('bw_zone1_chest') === 'true'; // Se já pegou o baú
+        // 1. Carregar dados
+        // Nota: O Nível 5 termina setando o progresso para 6. Se for 6, o baú desbloqueia.
+        let userProgress = parseInt(localStorage.getItem('bw_zone1_progress')) || 1; 
+        let userCoins = parseInt(localStorage.getItem('bw_wolfcoins')) || 0; 
+        let chestClaimed = localStorage.getItem('bw_zone1_chest') === 'true'; 
 
-        // Atualiza o display de moedas
+        // Atualiza HUD
         document.getElementById('display-coins').innerText = userCoins + " WC";
 
         // --- RENDERIZAÇÃO DO MAPA ---
@@ -173,17 +174,17 @@
         for (let i = 1; i <= totalLevels; i++) {
             const levelDiv = document.createElement('div');
             
-            // Lógica de Estado (Bloqueado vs Desbloqueado)
+            // Lógica de Estado
             if (i <= userProgress) {
                 // DESBLOQUEADO
                 levelDiv.className = `level-node node-unlocked group`;
                 
-                // Se o nível já foi passado (progresso maior que o atual), marcamos como completed visualmente
                 if (i < userProgress) {
+                    // Completado
                     levelDiv.classList.add('node-completed');
                     levelDiv.innerHTML = `<i class="fa-solid fa-check text-white"></i>`;
                 } else {
-                    // Nível atual
+                    // Atual
                     levelDiv.innerText = i;
                 }
 
@@ -194,16 +195,12 @@
                     </div>
                 `;
 
-                // Link de Navegação (Fórmula: (Nível-1)*3 + 1)
-                // Nível 1 -> atividade_1.html
-                // Nível 2 -> atividade_4.html
-                // Nível 3 -> atividade_7.html
-                // Nível 4 -> atividade_10.html
-                // Nível 5 -> atividade_13.html
-                // Nível 6 -> atividade_16.html
+                // Link de Navegação: (Nível-1)*3 + 1
                 const targetPage = `atividade_${((i - 1) * 3) + 1}.html`;
+                
+                // Se o usuário já passou do nível (userProgress > i), podemos deixar ele jogar de novo?
+                // Sim, para praticar.
                 levelDiv.onclick = () => {
-                    // Som de clique
                     window.location.href = targetPage;
                 };
 
@@ -212,7 +209,7 @@
                 levelDiv.className = `level-node node-locked`;
                 levelDiv.innerHTML = `<i class="fa-solid fa-lock text-sm"></i>`;
                 levelDiv.onclick = () => {
-                    // Animação de "Negado"
+                    // Shake effect
                     levelDiv.style.transform = "translateX(5px)";
                     setTimeout(() => levelDiv.style.transform = "translateX(0)", 100);
                     setTimeout(() => levelDiv.style.transform = "translateX(-5px)", 200);
@@ -223,41 +220,33 @@
             container.appendChild(levelDiv);
         }
 
-        // --- LÓGICA DO BAÚ ---
+        // --- LÓGICA DO BAÚ (CORRIGIDA) ---
         const chest = document.getElementById('final-chest');
 
-        if (userProgress > totalLevels && !chestClaimed) {
-            // Desbloqueado para pegar
-            chest.classList.add('chest-unlocked');
-        } else if (chestClaimed) {
-            // Já pegou
-            chest.classList.add('chest-unlocked', 'chest-opened');
-            chest.onclick = null; // Remove clique
-        }
-
-        function openChest() {
-            if (chest.classList.contains('chest-unlocked') && !chest.classList.contains('chest-opened')) {
-                // Efeito sonoro imaginário: *Megaman Item Get*
+        // Se o progresso for maior que o total de níveis (ou seja, completou o nível 5)
+        if (userProgress > totalLevels) {
+            
+            if (!chestClaimed) {
+                // CASO 1: Desbloqueado mas não pego
+                chest.classList.add('chest-unlocked');
                 
-                // 1. Adicionar Moedas
-                userCoins += 10;
-                localStorage.setItem('bw_wolfcoins', userCoins);
-                document.getElementById('display-coins').innerText = userCoins + " WC";
+                // Adiciona o evento de clique para ir para a página de recompensa
+                chest.addEventListener('click', function() {
+                    // Toca som (opcional) e redireciona
+                    console.log("Indo para recompensa...");
+                    window.location.href = "reward_zone1.html";
+                });
 
-                // 2. Marcar baú como aberto
-                localStorage.setItem('bw_zone1_chest', 'true');
-                chest.classList.add('chest-opened');
-
-                // 3. Feedback Visual (Alerta bonito)
-                alert("WOLFCOIN GET!\nVocê recebeu 10 Moedas.\nSaldo atual: " + userCoins);
-                
-                // Aqui entraria a lógica de integração com o jogo de plataforma no futuro
-                console.log("Sincronizando com servidor central... [SIMULAÇÃO]");
+            } else {
+                // CASO 2: Já pegou
+                chest.classList.add('chest-unlocked', 'chest-opened');
+                // Não faz nada ao clicar, ou pode mostrar um alerta "Já coletado"
+                chest.title = "Recompensa já coletada";
             }
-        }
+        } 
+        // CASO 3: Bloqueado (userProgress <= 5) é o padrão do CSS
 
-        // --- FERRAMENTA DE DEV (PARA VOCÊ TESTAR) ---
-        // Abra o console do navegador (F12) e digite: resetarProgresso() para começar do zero
+        // --- DEV TOOLS ---
         window.resetarProgresso = function() {
             localStorage.setItem('bw_zone1_progress', 1);
             localStorage.setItem('bw_wolfcoins', 0);
@@ -265,10 +254,8 @@
             location.reload();
         }
         
-        // Digite: pularNivel() para avançar sem jogar
-        window.pularNivel = function() {
-            let current = parseInt(localStorage.getItem('bw_zone1_progress')) || 1;
-            localStorage.setItem('bw_zone1_progress', current + 1);
+        window.pularParaBau = function() {
+            localStorage.setItem('bw_zone1_progress', 6);
             location.reload();
         }
     </script>
