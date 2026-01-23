@@ -188,11 +188,11 @@
                 // Salvar Progresso
                 let currentLevel = parseInt(localStorage.getItem('bw_zone1_progress')) || 1;
                 if (currentLevel === 5) { 
-                    localStorage.setItem('bw_zone1_progress', Reward);
+                   localStorage.setItem('bw_zone1_progress', 6);
                 }
 
                 // Delay para vitória
-                setTimeout(() => window.location.href = nextPage, 1500);
+               setTimeout(() => window.location.href = "zone1.html", 1500);
 
             } else {
                 // ERRO
