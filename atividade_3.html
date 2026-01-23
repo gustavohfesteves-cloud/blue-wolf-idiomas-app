@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Activity 3 - Sentence</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Orbitron', sans-serif; background-color: #0f172a; }
+        
+        .word-bubble {
+            background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+            border: 2px solid #38bdf8;
+            box-shadow: 0 4px 0 #075985;
+            transition: transform 0.1s;
+        }
+        .word-bubble:active {
+            transform: translateY(4px);
+            box-shadow: 0 0 0;
+        }
+        .word-used {
+            opacity: 0.3;
+            pointer-events: none;
+            border-color: #475569;
+            box-shadow: none;
+        }
+
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
+        .shake-error { animation: shake 0.4s ease-in-out; border-color: #ef4444 !important; }
+    </style>
+</head>
+<body class="h-screen flex flex-col items-center justify-between py-6 px-4">
+
+    <div class="w-full max-w-md h-2 bg-slate-800 rounded-full mb-4">
+        <div class="w-full h-full bg-cyan-500 rounded-full shadow-[0_0_10px_cyan]"></div>
+    </div>
+
+    <div class="flex flex-col items-center mb-6">
+        <img src="wolf_head.jpg" class="w-24 h-24 rounded-full border-4 border-cyan-500 mb-2">
+        <div class="bg-slate-800 p-4 rounded-xl border border-slate-600 relative">
+            <p class="text-white text-lg italic">"Ele bebe água."</p> <div class="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-slate-800 border-t border-l border-slate-600 rotate-45"></div>
+        </div>
+    </div>
+
+    <div id="sentence-line" class="w-full max-w-md min-h-[60px] bg-slate-900 border-b-2 border-slate-700 flex flex-wrap gap-2 p-2 items-center mb-8">
+        </div>
+
+    <div id="word-bank" class="flex flex-wrap justify-center gap-3 w-full max-w-md mb-auto">
+        </div>
+
+    <button onclick="checkSentence()" class="w-full max-w-md py-4 bg-green-600 hover:bg-green-500 text-white font-bold text-xl rounded-xl uppercase tracking-widest shadow-[0_0_15px_rgba(34,197,94,0.6)] active:scale-95 transition-all">
+        VERIFY
+    </button>
+
+    <script>
+        // CONFIGURAÇÃO DO NÍVEL
+        const correctSentence = ["He", "drinks", "water"]; // Ordem correta
+        const poolWords = ["water", "eats", "He", "drinks", "blue"]; // Palavras disponíveis (incluindo intrusas)
+        const nextPage = "dashboard.html"; // Volta pra casa
+
+        let userSentence = [];
+
+        window.onload = function() {
+            renderBank();
+        };
+
+        function renderBank() {
+            const bank = document.getElementById('word-bank');
+            bank.innerHTML = '';
+            
+            poolWords.forEach((word, index) => {
+                const btn = document.createElement('button');
+                // Se a palavra já está na frase, aplica estilo 'used'
+                const isUsed = userSentence.some(item => item.originalIndex === index);
+                
+                btn.className = `word-bubble px-4 py-2 rounded-lg text-white font-bold text-sm md:text-base ${isUsed ? 'word-used' : ''}`;
+                btn.innerText = word;
+                
+                if(!isUsed) {
+                    btn.onclick = () => addToLine(word, index);
+                }
+                
+                bank.appendChild(btn);
+            });
+
+            renderLine();
+        }
+
+        function renderLine() {
+            const line = document.getElementById('sentence-line');
+            line.innerHTML = '';
+
+            userSentence.forEach((item, arrIndex) => {
+                const btn = document.createElement('button');
+                btn.className = "bg-cyan-600 text-white px-3 py-1 rounded shadow cursor-pointer hover:bg-cyan-500 font-bold";
+                btn.innerText = item.word;
+                btn.onclick = () => removeFromLine(arrIndex);
+                line.appendChild(btn);
+            });
+        }
+
+        function addToLine(word, originalIndex) {
+            userSentence.push({ word: word, originalIndex: originalIndex });
+            renderBank();
+        }
+
+        function removeFromLine(arrIndex) {
+            userSentence.splice(arrIndex, 1);
+            renderBank();
+        }
+
+        function checkSentence() {
+            // Cria array só com as palavras (strings) para comparar
+            const currentWords = userSentence.map(obj => obj.word);
+            
+            // Compara arrays (transformando em string JSON é um jeito rápido)
+            if (JSON.stringify(currentWords) === JSON.stringify(correctSentence)) {
+                // SUCESSO
+                document.getElementById('sentence-line').classList.add('bg-green-900');
+                // Confetti ou som aqui
+                setTimeout(() => window.location.href = nextPage, 1000);
+            } else {
+                // ERRO
+                const line = document.getElementById('sentence-line');
+                line.classList.add('shake-error', 'border-red-500');
+                setTimeout(() => line.classList.remove('shake-error', 'border-red-500'), 500);
+            }
+        }
+    </script>
+</body>
+</html>
