@@ -317,5 +317,25 @@
         };
     }
 </script>
+    <script>
+    (function(){
+        // CONFIGURAÇÃO: Mude o nome do arquivo aqui
+        const nomeImagem = "zone1.jpeg"; 
+        
+        // CONFIGURAÇÃO: Transparência (0.1 = 10% visível, 0.05 = 5% visível)
+        const opacidade = 0.1; 
+
+        const bg = document.createElement('div');
+        bg.style.cssText = `
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -50; pointer-events: none;
+            background-image: url('${nomeImagem}');
+            background-size: cover; background-position: center;
+            opacity: ${opacidade};
+            mix-blend-mode: overlay; /* Faz a imagem se fundir com o fundo escuro */
+        `;
+        document.body.appendChild(bg);
+    })();
+</script>
 </body>
 </html>
