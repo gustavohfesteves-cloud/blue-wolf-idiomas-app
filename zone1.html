@@ -259,6 +259,63 @@
             location.reload();
         }
     </script>
+<div id="reward-btn-container" class="hidden mt-4">
+    <button onclick="activarRecompensa()" class="bg-yellow-400 hover:bg-yellow-300 text-black font-black py-3 px-8 rounded-xl shadow-[0_0_20px_rgba(250,204,21,0.6)] animate-pulse border-b-4 border-yellow-700 active:translate-y-1 active:border-b-0 uppercase tracking-widest">
+        <i class="fa-solid fa-gift mr-2"></i> Pegar Recompensa
+    </button>
+</div>
 
+<div id="video-overlay" class="hidden fixed inset-0 bg-black z-[999] flex items-center justify-center">
+    <div class="relative w-full max-w-4xl p-4">
+        <p class="text-center text-gray-500 mb-2 animate-pulse">Assista para desbloquear a Zona 2...</p>
+        <video id="final-video" class="w-full rounded-lg shadow-2xl border border-gray-800" playsinline>
+            <source src="reward_zone1.mp4" type="video/mp4">
+        </video>
+    </div>
+</div>
+
+<script>
+    // 1. Verificar se o jogador merece o botão (Passou do Nível 5)
+    // Nota: Certifique-se que o Nível 5 (atividade 17) salvou 'bw_zone1_progress' como 6
+    if (parseInt(localStorage.getItem('bw_zone1_progress') || 1) > 5) {
+        
+        // Revelar o container do botão
+        const btnContainer = document.getElementById('reward-btn-container');
+        btnContainer.classList.remove('hidden');
+
+        // Mover o botão para ficar visualmente logo abaixo do elemento do baú
+        const bau = document.getElementById('final-chest');
+        if(bau) {
+            bau.parentNode.insertBefore(btnContainer, bau.nextSibling);
+            // Opcional: Esconder o baú antigo para não confundir, ou deixar os dois
+            // bau.style.display = 'none'; 
+        }
+    }
+
+    // 2. Função de Ativação
+    function activarRecompensa() {
+        const overlay = document.getElementById('video-overlay');
+        const vid = document.getElementById('final-video');
+
+        // Mostrar vídeo
+        overlay.classList.remove('hidden');
+        
+        // Tentar tocar (Navegadores modernos exigem interação prévia, o clique no botão garante isso)
+        vid.play().catch(e => console.log("Erro autoplay:", e));
+
+        // 3. O Grande Final (Quando o vídeo acaba)
+        vid.onended = function() {
+            // A. Liberar Zona 2
+            localStorage.setItem('bw_zone2_unlocked', 'true');
+            
+            // B. Dar Moedas (50 WC)
+            let currentCoins = parseInt(localStorage.getItem('bw_wolfcoins') || 0);
+            localStorage.setItem('bw_wolfcoins', currentCoins + 50);
+
+            // C. Tchau Zona 1 -> Olá Mapa Mundi
+            window.location.href = 'ilhadeatividades.html';
+        };
+    }
+</script>
 </body>
 </html>
