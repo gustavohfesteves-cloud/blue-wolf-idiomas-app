@@ -13,122 +13,265 @@
             font-family: 'Press Start 2P', cursive;
             background-color: #020617;
             color: white;
-            min-height: 100vh;
-            overflow-x: hidden;
+            overflow-x: hidden; /* Evita rolagem lateral */
         }
 
-        /* Linha do Circuito (Atrás dos botões) */
+        /* Caminho de Circuito */
         .circuit-line {
             position: absolute;
-            width: 6px;
-            top: 0;
-            bottom: 0;
-            background: #1e293b; /* Cor escura da trilha */
+            width: 8px;
+            background: #1e293b;
             left: 50%;
             transform: translateX(-50%);
             z-index: 0;
             box-shadow: 0 0 10px rgba(0,0,0,0.5);
+            height: 100%;
         }
 
-        /* Botões de Nível */
+        /* Estilo dos Botões de Nível */
         .level-node {
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%; /* Circular */
             display: flex;
             align-items: center;
             justify-content: center;
             position: relative;
-            z-index: 10; /* Acima da linha */
+            z-index: 10;
             transition: all 0.3s;
             cursor: pointer;
             font-family: 'Orbitron', sans-serif;
             font-weight: 900;
-            font-size: 1.2rem;
-            background-color: #020617; /* Fundo para tapar a linha */
+            font-size: 1.5rem;
+            text-shadow: 0 2px 0 rgba(0,0,0,0.5);
         }
 
-        /* 1. Nível Aberto (Atual) */
+        /* Nível Aberto */
         .node-unlocked {
-            border: 4px solid #38bdf8; /* Cyan */
-            box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
-            color: white;
-            animation: pulse-border 2s infinite;
+            background: radial-gradient(circle at 30% 30%, #0ea5e9, #0369a1);
+            border: 4px solid #38bdf8;
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
         }
-        .node-unlocked:hover { transform: scale(1.1); }
+        .node-unlocked:hover {
+            transform: scale(1.1);
+            border-color: #fbbf24; /* Amarelo */
+            box-shadow: 0 0 30px rgba(251, 191, 36, 0.6);
+        }
 
-        /* 2. Nível Bloqueado (Futuro) */
+        /* Nível Bloqueado */
         .node-locked {
-            border: 4px solid #334155; /* Slate Dark */
-            color: #475569;
+            background: #1e293b;
+            border: 4px solid #475569;
+            color: #64748b;
+            cursor: not-allowed;
+            filter: grayscale(100%);
+        }
+
+        /* Nível Concluído (Opcional - visual dourado) */
+        .node-completed {
+            background: radial-gradient(circle at 30% 30%, #10b981, #059669);
+            border: 4px solid #34d399;
+            box-shadow: 0 0 15px rgba(52, 211, 153, 0.3);
+        }
+
+        /* O Baú */
+        .chest-node {
+            width: 100px;
+            height: 80px;
+            background: url('https://cdn-icons-png.flaticon.com/512/4230/4230569.png'); /* Placeholder Pixel Art Chest */
+            background-size: cover;
+            background-position: center;
+            z-index: 10;
+            transition: transform 0.3s;
+            filter: grayscale(100%);
+            opacity: 0.6;
             cursor: not-allowed;
         }
-
-        /* 3. Nível Concluído (Passado) */
-        .node-completed {
-            background: #0ea5e9; /* Preenchido */
-            border: 4px solid #0ea5e9;
-            box-shadow: 0 0 10px #0ea5e9;
+        .chest-unlocked {
+            filter: grayscale(0%);
+            opacity: 1;
+            cursor: pointer;
+            animation: bounce 2s infinite;
+        }
+        .chest-opened {
+            filter: brightness(1.5) sepia(1); /* Efeito dourado */
+            animation: none;
         }
 
-        /* Baú */
-        .chest-container {
-            position: relative;
-            z-index: 10;
-            background-color: #020617;
-            padding: 10px;
-            border-radius: 20px;
-            margin-top: 20px;
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* HUD Superior */
+        .hud-panel {
+            font-family: 'Orbitron', sans-serif;
+            background: rgba(15, 23, 42, 0.95);
+            border-bottom: 2px solid #22d3ee;
+            backdrop-filter: blur(5px);
         }
         
-        .chest-icon {
-            font-size: 3rem;
-            transition: transform 0.3s;
+        .coin-counter {
+            background: linear-gradient(90deg, #ca8a04, #eab308);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 10px rgba(234, 179, 8, 0.3);
         }
-
-        /* Baú Fechado */
-        .chest-locked { color: #475569; filter: grayscale(100%); opacity: 0.5; cursor: not-allowed; }
-        
-        /* Baú Aberto */
-        .chest-unlocked { 
-            color: #fbbf24; 
-            filter: grayscale(0%); 
-            opacity: 1; 
-            cursor: pointer; 
-            animation: bounce 2s infinite; 
-            text-shadow: 0 0 20px rgba(251, 191, 36, 0.6);
-        }
-
-        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-        @keyframes pulse-border { 0% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(56, 189, 248, 0); } 100% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0); } }
-
-        .hud-panel { background: rgba(15, 23, 42, 0.95); border-bottom: 2px solid #22d3ee; }
     </style>
 </head>
-<body class="flex flex-col items-center">
-
-    <div class="fixed inset-0 z-0 pointer-events-none opacity-20 bg-cover bg-center mix-blend-overlay" style="background-image: url('assets/pattern_tech.png');"></div>
+<body class="flex flex-col items-center min-h-screen pb-20">
 
     <div class="fixed top-0 w-full z-50 hud-panel flex justify-between items-center px-4 py-3 shadow-lg">
-        <a href="ilhadeatividades.html" class="flex items-center gap-2 text-cyan-400 hover:text-white transition-colors">
+        <a href="dashboard.html" class="flex items-center gap-2 text-cyan-400 hover:text-white transition-colors">
             <i class="fa-solid fa-chevron-left"></i>
-            <span class="text-xs font-bold tracking-widest uppercase">Mapa</span>
+            <span class="text-xs font-bold tracking-widest">MAPA MUNDI</span>
         </a>
-        <div class="flex items-center gap-2 text-yellow-400 bg-slate-900/50 px-3 py-1 rounded-full border border-yellow-600/30">
-            <i class="fa-solid fa-coins"></i>
-            <span id="display-coins" class="text-sm font-bold">...</span>
+        
+        <div class="flex gap-6">
+            <div class="flex items-center gap-2">
+                <i class="fa-solid fa-coins text-yellow-400 animate-pulse"></i>
+                <span id="display-coins" class="text-sm font-bold coin-counter">0 WC</span>
+            </div>
         </div>
     </div>
 
-    <div class="relative z-10 w-full flex flex-col items-center pb-20 mt-24">
+    <div class="mt-24 mb-8 text-center px-4">
+        <h1 class="text-lg md:text-2xl text-cyan-300 drop-shadow-[0_0_8px_rgba(34,211,238,0.8)] uppercase leading-relaxed">
+            Zone 1<br>
+            <span class="text-sm md:text-base text-white">Eating and Drinking</span>
+        </h1>
+    </div>
+
+    <div class="relative w-full max-w-md flex flex-col items-center gap-12 px-6 pb-24">
         
-        <div class="mb-8 text-center px-4">
-            <h1 class="text-xl md:text-2xl text-cyan-300 drop-shadow-[0_0_8px_rgba(34,211,238,0.8)] uppercase">Zone 1</h1>
-            <p class="text-[10px] text-slate-400 tracking-widest mt-2 uppercase">Eating and Drinking</p>
-        </div>
+        <div class="circuit-line top-4 h-[90%] bg-gradient-to-b from-cyan-900 to-slate-900"></div>
 
-        <div class="relative flex flex-col items-center w-full max-w-sm">
+        <div id="levels-container" class="contents">
+            </div>
+
+        <div id="final-chest" class="chest-node" onclick="openChest()"></div>
+        <div class="z-10 bg-slate-900 px-3 py-1 rounded border border-yellow-600 text-[10px] text-yellow-400 tracking-widest">REWARD</div>
+
+    </div>
+
+    <script>
+        // --- CONFIGURAÇÃO DO SISTEMA WOLFCOIN & PROGRESSO ---
+
+        // 1. Carregar dados do usuário (Simulação de Banco de Dados)
+        let userProgress = parseInt(localStorage.getItem('bw_zone1_progress')) || 1; // Começa no nível 1
+        let userCoins = parseInt(localStorage.getItem('bw_wolfcoins')) || 0; // Começa com 0 moedas
+        let chestClaimed = localStorage.getItem('bw_zone1_chest') === 'true'; // Se já pegou o baú
+
+        // Atualiza o display de moedas
+        document.getElementById('display-coins').innerText = userCoins + " WC";
+
+        // --- RENDERIZAÇÃO DO MAPA ---
+        const container = document.getElementById('levels-container');
+        const totalLevels = 5;
+
+        for (let i = 1; i <= totalLevels; i++) {
+            const levelDiv = document.createElement('div');
             
-            <div class="circuit-line"></div>
+            // Lógica de Estado (Bloqueado vs Desbloqueado)
+            if (i <= userProgress) {
+                // DESBLOQUEADO
+                levelDiv.className = `level-node node-unlocked group`;
+                
+                // Se o nível já foi passado (progresso maior que o atual), marcamos como completed visualmente
+                if (i < userProgress) {
+                    levelDiv.classList.add('node-completed');
+                    levelDiv.innerHTML = `<i class="fa-solid fa-check text-white"></i>`;
+                } else {
+                    // Nível atual
+                    levelDiv.innerText = i;
+                }
 
-            <div id="levels-container" class="flex flex-col gap-8
+                // Tooltip
+                levelDiv.innerHTML += `
+                    <div class="absolute left-24 w-32 bg-slate-800 text-[10px] p-2 rounded border border-cyan-500 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none text-left z-20">
+                        ACTIVITY SET ${i}
+                    </div>
+                `;
+
+                // Link de Navegação (Fórmula: (Nível-1)*3 + 1)
+                // Nível 1 -> atividade_1.html
+                // Nível 2 -> atividade_4.html
+                // Nível 3 -> atividade_7.html
+                // Nível 4 -> atividade_10.html
+                // Nível 5 -> atividade_13.html
+                // Nível 6 -> reward_zone1.html
+                const targetPage = `atividade_${((i - 1) * 3) + 1}.html`;
+                levelDiv.onclick = () => {
+                    // Som de clique
+                    window.location.href = targetPage;
+                };
+
+            } else {
+                // BLOQUEADO
+                levelDiv.className = `level-node node-locked`;
+                levelDiv.innerHTML = `<i class="fa-solid fa-lock text-sm"></i>`;
+                levelDiv.onclick = () => {
+                    // Animação de "Negado"
+                    levelDiv.style.transform = "translateX(5px)";
+                    setTimeout(() => levelDiv.style.transform = "translateX(0)", 100);
+                    setTimeout(() => levelDiv.style.transform = "translateX(-5px)", 200);
+                    setTimeout(() => levelDiv.style.transform = "translateX(0)", 300);
+                };
+            }
+
+            container.appendChild(levelDiv);
+        }
+
+        // --- LÓGICA DO BAÚ ---
+        const chest = document.getElementById('final-chest');
+
+        if (userProgress > totalLevels && !chestClaimed) {
+            // Desbloqueado para pegar
+            chest.classList.add('chest-unlocked');
+        } else if (chestClaimed) {
+            // Já pegou
+            chest.classList.add('chest-unlocked', 'chest-opened');
+            chest.onclick = null; // Remove clique
+        }
+
+        function openChest() {
+            if (chest.classList.contains('chest-unlocked') && !chest.classList.contains('chest-opened')) {
+                // Efeito sonoro imaginário: *Megaman Item Get*
+                
+                // 1. Adicionar Moedas
+                userCoins += 10;
+                localStorage.setItem('bw_wolfcoins', userCoins);
+                document.getElementById('display-coins').innerText = userCoins + " WC";
+
+                // 2. Marcar baú como aberto
+                localStorage.setItem('bw_zone1_chest', 'true');
+                chest.classList.add('chest-opened');
+
+                // 3. Feedback Visual (Alerta bonito)
+                alert("WOLFCOIN GET!\nVocê recebeu 10 Moedas.\nSaldo atual: " + userCoins);
+                
+                // Aqui entraria a lógica de integração com o jogo de plataforma no futuro
+                console.log("Sincronizando com servidor central... [SIMULAÇÃO]");
+            }
+        }
+
+        // --- FERRAMENTA DE DEV (PARA VOCÊ TESTAR) ---
+        // Abra o console do navegador (F12) e digite: resetarProgresso() para começar do zero
+        window.resetarProgresso = function() {
+            localStorage.setItem('bw_zone1_progress', 1);
+            localStorage.setItem('bw_wolfcoins', 0);
+            localStorage.setItem('bw_zone1_chest', 'false');
+            location.reload();
+        }
+        
+        // Digite: pularNivel() para avançar sem jogar
+        window.pularNivel = function() {
+            let current = parseInt(localStorage.getItem('bw_zone1_progress')) || 1;
+            localStorage.setItem('bw_zone1_progress', current + 1);
+            location.reload();
+        }
+    </script>
+
+</body>
+</html>
