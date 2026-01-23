@@ -395,7 +395,26 @@
     }
 
 </script>
+<script>
+    // === PATCH DE PROGRESSO ZONA 1 (AUTOMÁTICO) ===
+    (function(){
+        // 1. Pega o nível (1 a 6) e transforma em porcentagem (0 a 100)
+        let nivelAtual = parseInt(localStorage.getItem('bw_zone1_progress') || 1);
+        let porcentagem = Math.min(100, Math.max(0, (nivelAtual - 1) * 20));
 
+        // 2. Encontra o elemento da Zona 1 e atualiza
+        let cardZone1 = document.querySelector('a[href="zone1.html"]');
+        if (cardZone1) {
+            // Atualiza o texto (ex: 40%)
+            cardZone1.querySelector('.text-cyan-400').innerText = porcentagem + "%";
+            
+            // Atualiza a barra de progresso
+            let barra = cardZone1.querySelector('.progress-bar-fill');
+            barra.classList.remove('w-1/5'); // Remove a largura fixa antiga do CSS
+            barra.style.width = porcentagem + "%"; // Aplica a nova largura real
+        }
+    })();
+</script>
 </body>
 
 </html>
