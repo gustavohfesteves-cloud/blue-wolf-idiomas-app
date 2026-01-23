@@ -3,129 +3,161 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zona de Combate 1</title>
+    <title>Mapa Mundi - Seleção de Zona</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Orbitron:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
         body {
-            font-family: 'Press Start 2P', cursive;
-            background-color: #020617; /* Cyber Dark */
+            font-family: 'Orbitron', sans-serif;
+            background-color: #020617; /* Cyber Dark base */
             color: white;
-            overflow-x: hidden;
         }
 
-        /* O Caminho (Estrada) */
-        .path-line {
-            position: absolute;
-            width: 8px;
-            background: #1e293b;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 0;
-            box-shadow: 0 0 10px rgba(0,0,0,0.5);
-        }
-
-        /* Nós de Fase (Stages) */
-        .stage-node {
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(145deg, #1e293b, #0f172a);
-            border: 4px solid #475569;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        /* Estilo dos Portais de Zona */
+        .zone-portal {
+            background: linear-gradient(180deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.95) 100%);
+            border: 2px solid rgba(34, 211, 238, 0.3); /* Ciano fraco */
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
             position: relative;
-            z-index: 10;
-            transition: all 0.3s;
-            cursor: pointer;
-            box-shadow: 5px 5px 15px rgba(0,0,0,0.5);
+            overflow: hidden;
         }
 
-        /* Fase Ativa (Desbloqueada) */
-        .stage-active {
-            border-color: #22d3ee; /* Cyan */
-            background: radial-gradient(circle at 30% 30%, #0e7490, #083344);
-            box-shadow: 0 0 20px rgba(34, 211, 238, 0.4);
-            animation: pulse-glow 2s infinite;
+        /* Portal Desbloqueado (Hover) */
+        .zone-unlocked:hover {
+            border-color: #22d3ee;
+            box-shadow: 0 0 25px rgba(34, 211, 238, 0.5);
+            transform: translateY(-5px) scale(1.02);
         }
-        .stage-active:hover {
-            transform: scale(1.1);
-            border-color: #fbbf24; /* Amarelo */
+        /* Efeito de scanline no hover */
+        .zone-unlocked::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(to bottom, transparent, rgba(34,211,238,0.1), transparent);
+            transform: rotate(45deg);
+            animation: scanline 3s linear infinite;
+            opacity: 0;
+            pointer-events: none;
         }
+        .zone-unlocked:hover::after { opacity: 1; }
 
-        /* Fase Bloqueada */
-        .stage-locked {
-            opacity: 0.6;
-            filter: grayscale(100%);
+        @keyframes scanline { 0% { transform: translateY(-100%) rotate(45deg); } 100% { transform: translateY(100%) rotate(45deg); } }
+
+        /* Portal Bloqueado */
+        .zone-locked {
+            border-color: #475569;
+            opacity: 0.7;
             cursor: not-allowed;
+            filter: grayscale(80%);
         }
 
-        /* Animação de Pulso */
-        @keyframes pulse-glow {
-            0% { box-shadow: 0 0 0 0 rgba(34, 211, 238, 0.7); }
-            70% { box-shadow: 0 0 0 15px rgba(34, 211, 238, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(34, 211, 238, 0); }
+        /* Portal "Em Breve" */
+        .zone-soon {
+            border-color: #fbbf24; /* Amarelo/Laranja */
+            border-style: dashed;
+            opacity: 0.5;
         }
 
-        /* Estilo Tech para HUD */
-        .hud-panel {
-            font-family: 'Orbitron', sans-serif; /* Mais legível para textos longos */
-            background: rgba(15, 23, 42, 0.9);
-            border-bottom: 2px solid #22d3ee;
-            backdrop-filter: blur(5px);
-        }
+        /* Barra de Progresso Interna */
+        .progress-bar-bg { background: rgba(15, 23, 42, 0.8); border: 1px solid #334155; }
+        .progress-bar-fill { background: linear-gradient(90deg, #0ea5e9, #22d3ee); box-shadow: 0 0 10px rgba(34,211,238,0.7); }
     </style>
 </head>
-<body class="bg-[#020617] min-h-screen flex flex-col items-center pb-20">
+<body class="min-h-screen flex flex-col">
 
-    <div class="fixed top-0 w-full z-50 hud-panel flex justify-between items-center p-4 shadow-lg">
+    <div class="fixed inset-0 z-0 pointer-events-none opacity-10 bg-cover bg-center mix-blend-overlay"
+         style="background-image: url('assets/pattern_tech.png');">
+    </div>
+    <div class="sticky top-0 z-50 w-full p-4 flex justify-between items-center bg-slate-900/90 border-b border-cyan-900 backdrop-blur-md shadow-lg">
         <a href="dashboard.html" class="flex items-center gap-2 text-cyan-400 hover:text-white transition-colors">
             <i class="fa-solid fa-chevron-left"></i>
-            <span class="text-xs font-bold">MAPA MUNDI</span>
+            <span class="text-xs font-bold tracking-widest uppercase">Voltar ao Painel</span>
         </a>
-        <div class="flex gap-4">
-            <div class="flex items-center gap-2 text-yellow-400">
-                <i class="fa-solid fa-bolt"></i>
-                <span class="text-xs">100%</span>
-            </div>
-            <div class="flex items-center gap-2 text-green-400">
-                <i class="fa-solid fa-gem"></i>
-                <span class="text-xs">0</span>
-            </div>
+        <div class="flex items-center gap-2 text-yellow-400 bg-slate-800/80 px-3 py-1 rounded-full border border-yellow-600/50">
+            <i class="fa-solid fa-coins animate-pulse"></i>
+            <span class="text-xs font-bold tracking-wider">150 WC</span>
         </div>
     </div>
 
-    <div class="mt-24 mb-10 text-center">
-        <h1 class="text-xl text-cyan-300 drop-shadow-[0_0_5px_rgba(34,211,238,0.8)]">ZONA 1</h1>
-        <p class="text-[10px] text-slate-400 mt-2">A PRAIA DO DESEMBARQUE</p>
-    </div>
 
-    <div class="relative w-full max-w-md flex flex-col items-center gap-16 px-6">
-        
-        <div class="path-line h-[80%] top-10 bg-gradient-to-b from-cyan-900 to-slate-800"></div>
+    <div class="flex-1 z-10 p-6 flex flex-col items-center">
 
-        <div onclick="abrirMissao(1)" class="stage-node stage-active relative group">
-            <span class="text-xl font-bold text-white drop-shadow-md">1</span>
-            
-            <div class="absolute -right-32 bg-slate-800 text-[10px] p-2 rounded border border-cyan-500 opacity-0 group-hover:opacity-100 transition-opacity w-28 text-center pointer-events-none">
-                PRIMEIROS COMANDOS
+        <h1 class="text-3xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 drop-shadow-[0_0_10px_rgba(34,211,238,0.6)] uppercase tracking-widest text-center mb-2">
+            Mapa Mundi
+        </h1>
+        <p class="text-slate-400 text-sm mb-12 tracking-wider uppercase">Selecione o Setor de Operação</p>
+
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-5xl">
+
+            <a href="zone1.html" class="zone-portal zone-unlocked rounded-2xl p-6 flex flex-col gap-4 group h-auto md:h-80 justify-between">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h2 class="text-2xl font-bold text-white group-hover:text-cyan-300 transition-colors">ZONE 1</h2>
+                        <p class="text-cyan-500 text-xs uppercase tracking-widest">Eating & Drinking</p>
+                    </div>
+                    <i class="fa-solid fa-earth-americas text-4xl text-cyan-600/50 group-hover:text-cyan-400 transition-all"></i>
+                </div>
+
+                <div class="flex-1 flex items-center justify-center py-4">
+                     <i class="fa-solid fa-burger text-6xl text-slate-700 group-hover:text-cyan-200 transition-all drop-shadow-[0_0_15px_rgba(34,211,238,0.2)]"></i>
+                </div>
+
+                <div class="w-full">
+                    <div class="flex justify-between text-xs text-slate-400 mb-1">
+                        <span>Progresso do Setor</span>
+                        <span class="text-cyan-400">20%</span>
+                    </div>
+                    <div class="h-2 progress-bar-bg rounded-full overflow-hidden">
+                        <div class="h-full w-1/5 progress-bar-fill rounded-full"></div>
+                    </div>
+                </div>
+            </a>
+
+            <div class="zone-portal zone-locked rounded-2xl p-6 flex flex-col gap-4 h-auto md:h-80 justify-between relative">
+                 <div class="absolute inset-0 flex items-center justify-center z-20 bg-black/40">
+                    <i class="fa-solid fa-lock text-5xl text-slate-500 drop-shadow-lg"></i>
+                </div>
+
+                <div class="flex justify-between items-start opacity-50">
+                    <div>
+                        <h2 class="text-2xl font-bold text-slate-300">ZONE 2</h2>
+                        <p class="text-slate-500 text-xs uppercase tracking-widest">Travel & Directions</p>
+                    </div>
+                    <i class="fa-solid fa-compass text-4xl text-slate-700"></i>
+                </div>
+
+                <div class="flex-1 flex items-center justify-center py-4 opacity-30">
+                    <i class="fa-solid fa-plane text-6xl text-slate-800"></i>
+                </div>
+
+                <div class="w-full opacity-50">
+                    <div class="text-xs text-slate-500 text-center uppercase tracking-widest border border-slate-700 py-2 rounded">
+                        Requer Zona 1 Completa
+                    </div>
+                </div>
             </div>
-        </div>
 
-        <div class="stage-node stage-locked">
-            <i class="fa-solid fa-lock text-slate-500 text-xl"></i>
-        </div>
 
-        <div class="stage-node stage-locked">
-            <i class="fa-solid fa-lock text-slate-500 text-xl"></i>
-        </div>
+            <div class="zone-portal zone-soon rounded-2xl p-6 flex flex-col items-center justify-center gap-4 h-auto md:h-80 relative bg-yellow-900/10">
+                <i class="fa-solid fa-person-digging text-5xl text-yellow-600/70"></i>
+                <h2 class="text-xl font-bold text-yellow-600/70 uppercase tracking-widest">Em Construção</h2>
+                <p class="text-yellow-600/50 text-xs text-center">Novos dados sendo<br>compilados...</p>
+            </div>
 
-        <div class="stage-node stage-locked border-red-900 bg-red-950/30">
-            <i class="fa-solid fa-skull text-red-700 text-2xl"></i>
-        </div>
+        </div> </div>
 
-        <div class="stage-node stage-locked">
-            <i class="fa-solid fa-lock text-slate-500 text
+    <script>
+        // Exemplo de como você controlaria isso no futuro com JS:
+        // let maxZoneReached = localStorage.getItem('bw_max_zone') || 1;
+        // if (maxZoneReached < 2) { // Aplica classe de bloqueio na zona 2 }
+    </script>
+
+</body>
+</html>
