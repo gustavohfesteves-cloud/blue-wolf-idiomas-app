@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reward Acquired</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'Orbitron', sans-serif; background-color: #000; overflow: hidden; }
+
+        /* Animação de Pulso do Botão */
+        @keyframes neon-pulse {
+            0% { box-shadow: 0 0 10px #eab308; }
+            50% { box-shadow: 0 0 30px #eab308, 0 0 50px #eab308; }
+            100% { box-shadow: 0 0 10px #eab308; }
+        }
+
+        .btn-claim {
+            animation: neon-pulse 2s infinite;
+            background: linear-gradient(180deg, #ca8a04 0%, #854d0e 100%);
+            border: 2px solid #fef08a;
+        }
+        
+        /* Fade Out para transições */
+        .fade-out { opacity: 0; pointer-events: none; transition: opacity 0.5s; }
+    </style>
+</head>
+<body class="h-screen w-screen flex flex-col items-center justify-center relative">
+
+    <div class="fixed inset-0 z-0 pointer-events-none opacity-20 bg-cover bg-center mix-blend-overlay" 
+         style="background-image: url('assets/pattern_tech.png');">
+    </div>
+
+    <div id="start-screen" class="z-10 flex flex-col items-center gap-8 text-center px-4">
+        
+        <div class="relative w-40 h-40 md:w-56 md:h-56 flex items-center justify-center">
+            <div class="absolute inset-0 bg-yellow-500/20 rounded-full blur-xl animate-pulse"></div>
+            <i class="fa-solid fa-box-open text-8xl md:text-9xl text-yellow-400 drop-shadow-[0_0_20px_rgba(250,204,21,0.8)]"></i>
+        </div>
+
+        <h1 class="text-3xl md:text-5xl text-white font-black uppercase tracking-widest drop-shadow-md">
+            Zone Complete!
+        </h1>
+        <p class="text-yellow-400 text-sm md:text-base tracking-[0.2em] uppercase mb-4">
+            Transmission Incoming...
+        </p>
+
+        <button onclick="playReward()" class="btn-claim px-10 py-5 rounded-xl text-white font-black text-2xl uppercase tracking-widest transform hover:scale-105 active:scale-95 transition-all">
+            CLAIM REWARD
+        </button>
+    </div>
+
+    <div id="video-container" class="fixed inset-0 z-20 bg-black hidden flex items-center justify-center">
+        <video 
+            id="reward-video" 
+            src="reward_zone1.mp4" 
+            class="w-full h-full object-contain"
+            playsinline>
+        </video>
+        
+        <button onclick="finishReward()" class="absolute top-4 right-4 text-xs text-white/50 border border-white/30 px-3 py-1 rounded hover:bg-white/10 uppercase">
+            Skip >>
+        </button>
+    </div>
+
+    <script>
+        // Referências
+        const startScreen = document.getElementById('start-screen');
+        const videoContainer = document.getElementById('video-container');
+        const video = document.getElementById('reward-video');
+
+        // 1. Função chamada ao clicar no botão CLAIM
+        function playReward() {
+            // Some com a tela inicial
+            startScreen.classList.add('fade-out');
+            
+            // Mostra o container do vídeo
+            setTimeout(() => {
+                startScreen.style.display = 'none';
+                videoContainer.classList.remove('hidden');
+                videoContainer.classList.add('flex');
+                
+                // Toca o vídeo (Agora com som, pois foi interação do usuário)
+                video.play();
+            }, 500);
+        }
+
+        // 2. Event Listener: Dispara quando o vídeo acaba sozinho
+        video.addEventListener('ended', () => {
+            finishReward();
+        });
+
+        // 3. Função Final: Computa os ganhos e redireciona
+        function finishReward() {
+            console.log("Processando recompensas...");
+
+            // === LÓGICA CRÍTICA DE DESBLOQUEIO ===
+            
+            // A. Desbloquear Zona 2
+            localStorage.setItem('bw_zone2_unlocked', 'true');
+
+            // B. Adicionar WolfCoins (Bônus final de Zona)
+            // Vamos dar +50 moedas por fechar a zona inteira (além das 10 do baú anterior se houver)
+            let currentCoins = parseInt(localStorage.getItem('bw_wolfcoins')) || 0;
+            let newTotal = currentCoins + 50; 
+            localStorage.setItem('bw_wolfcoins', newTotal);
+
+            // C. Salvar que a recompensa dessa zona já foi vista (para não ganhar infinito se voltar)
+            localStorage.setItem('bw_zone1_reward_claimed', 'true');
+
+            // === REDIRECIONAMENTO ===
+            // Direciona para o Mapa Mundi, que agora lerá o 'bw_zone2_unlocked' e abrirá o portal.
+            window.location.href = 'ilhadeatividades.html';
+        }
+    </script>
+</body>
+</html>
