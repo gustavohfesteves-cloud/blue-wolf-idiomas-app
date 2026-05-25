@@ -23,7 +23,7 @@
         }
 
         .progress-fill {
-            width: 70%; /* Adjust to reflect progress */
+            width: 70%;
             height: 100%;
             background-color: #00d26a;
         }
@@ -118,17 +118,16 @@
     </div>
 
     <div class="build-area" id="build-area">
-        </div>
+    </div>
 
     <div class="options-area" id="options-area">
-        </div>
+    </div>
 
     <button class="verify-btn" onclick="verifySequence()">Verify</button>
 
     <script>
         const targetSequence = ["The", "father", "fights", "for", "love"];
         
-        // Jumbled starting array
         let availablePool = ["fights", "The", "love", "father", "for"]; 
         let activeSequence = [];
 
@@ -139,7 +138,6 @@
             optionsArea.innerHTML = '';
             buildArea.innerHTML = '';
 
-            // Render words moved to the build area
             activeSequence.forEach((word, index) => {
                 const block = document.createElement('div');
                 block.className = 'word-block';
@@ -148,7 +146,6 @@
                 buildArea.appendChild(block);
             });
 
-            // Render words remaining in the options pool
             availablePool.forEach((word, index) => {
                 const block = document.createElement('div');
                 block.className = 'word-block';
@@ -175,14 +172,16 @@
             const targetString = targetSequence.join(" ");
 
             if (currentString === targetString) {
-                alert("Sequence confirmed. Proceeding forward.");
-                // window.location.href = 'atividadez2_13.html'; // Activate to advance to next target
+                // Unlock the next module in Zone 2
+                localStorage.setItem('unlocked_atividadez2_13', 'true');
+                
+                // Force progression to the next phase
+                window.location.href = 'atividadez2_13.html';
             } else {
                 alert("Tactical error. Sequence incorrect. Realign and try again.");
             }
         }
 
-        // Initialize tactical interface
         renderInterface();
     </script>
 
