@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Activity z2 12</title>
+    <style>
+        body {
+            background-color: #0b162c;
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            height: 100vh;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background-color: #112240;
+        }
+
+        .progress-fill {
+            width: 70%; /* Adjust to reflect progress */
+            height: 100%;
+            background-color: #00d26a;
+        }
+
+        .image-container {
+            margin-top: 50px;
+            border: 2px solid #ffffff;
+            border-radius: 8px;
+            padding: 5px;
+            background-color: #ffffff;
+        }
+
+        .image-container img {
+            display: block;
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
+        .build-area {
+            display: flex;
+            gap: 10px;
+            margin-top: 40px;
+            min-height: 50px;
+            min-width: 300px;
+            border-bottom: 2px solid #1e3a5f;
+            padding-bottom: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .options-area {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+            max-width: 600px;
+        }
+
+        .word-block {
+            background-color: #1e3a5f;
+            color: #ffffff;
+            padding: 12px 20px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            user-select: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            transition: transform 0.1s, background-color 0.2s;
+        }
+
+        .word-block:active {
+            transform: scale(0.95);
+        }
+
+        .word-block:hover {
+            background-color: #2a4d7a;
+        }
+
+        .verify-btn {
+            margin-top: auto;
+            margin-bottom: 50px;
+            background-color: #00d26a;
+            color: #ffffff;
+            border: none;
+            padding: 15px 80px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 30px;
+            cursor: pointer;
+            text-transform: uppercase;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            transition: background-color 0.2s;
+        }
+
+        .verify-btn:hover {
+            background-color: #00b359;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="progress-bar">
+        <div class="progress-fill"></div>
+    </div>
+
+    <div class="image-container">
+        <img src="father.jpeg" alt="Father">
+    </div>
+
+    <div class="build-area" id="build-area">
+        </div>
+
+    <div class="options-area" id="options-area">
+        </div>
+
+    <button class="verify-btn" onclick="verifySequence()">Verify</button>
+
+    <script>
+        const targetSequence = ["The", "father", "fights", "for", "love"];
+        
+        // Jumbled starting array
+        let availablePool = ["fights", "The", "love", "father", "for"]; 
+        let activeSequence = [];
+
+        const optionsArea = document.getElementById('options-area');
+        const buildArea = document.getElementById('build-area');
+
+        function renderInterface() {
+            optionsArea.innerHTML = '';
+            buildArea.innerHTML = '';
+
+            // Render words moved to the build area
+            activeSequence.forEach((word, index) => {
+                const block = document.createElement('div');
+                block.className = 'word-block';
+                block.textContent = word;
+                block.onclick = () => returnToPool(index);
+                buildArea.appendChild(block);
+            });
+
+            // Render words remaining in the options pool
+            availablePool.forEach((word, index) => {
+                const block = document.createElement('div');
+                block.className = 'word-block';
+                block.textContent = word;
+                block.onclick = () => moveToSequence(index);
+                optionsArea.appendChild(block);
+            });
+        }
+
+        function moveToSequence(index) {
+            activeSequence.push(availablePool[index]);
+            availablePool.splice(index, 1);
+            renderInterface();
+        }
+
+        function returnToPool(index) {
+            availablePool.push(activeSequence[index]);
+            activeSequence.splice(index, 1);
+            renderInterface();
+        }
+
+        function verifySequence() {
+            const currentString = activeSequence.join(" ");
+            const targetString = targetSequence.join(" ");
+
+            if (currentString === targetString) {
+                alert("Sequence confirmed. Proceeding forward.");
+                // window.location.href = 'atividadez2_13.html'; // Activate to advance to next target
+            } else {
+                alert("Tactical error. Sequence incorrect. Realign and try again.");
+            }
+        }
+
+        // Initialize tactical interface
+        renderInterface();
+    </script>
+
+</body>
+</html>
